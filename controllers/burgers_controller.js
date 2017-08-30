@@ -1,9 +1,5 @@
-var express = require("express");
-
-var router = express.Router();
-
 // Import the model (cat.js) to use its database functions.
-var burger = require("../models/burger.js");
+var db = require("../models");
 
 //functions
 var burgerThisName = function(ingredientsArr) {
@@ -26,52 +22,61 @@ var burgerThisName = function(ingredientsArr) {
     return burgerName.trim();
 };
 
-// Create all our routes and set up logic within those routes where required.
-router.get("/", function(req, res) {
-    burger.all(function(data) {
-        var hbsObject = {
-            burgers: data
-        };
-        console.log(hbsObject);
-        res.render("index", hbsObject);
-    });
-});
-
-router.post("/", function(req, res) {
-    burger.create([
-        "name", "devoured"
-    ], [
-        burgerThisName([req.body.size, req.body.protein, req.body.topping, req.body.extra]), false
-    ], function() {
-        res.redirect("/");
-    });
-});
-
-router.put("/:id", function(req, res) {
-    var condition = "id = " + req.params.id;
-
-    console.log("condition", condition);
-
-    burger.update({
-        devoured: req.body.devoured
-    }, condition, function() {
-        res.redirect("/");
-    });
-});
-
-router.delete("/:id", function(req, res) {
-    var condition = "id = " + req.params.id;
-
-    //console.log("id: " + req.params.id);
-    console.log(condition)
-
-    burger.delete(condition, function() {
-        res.redirect("/");
+module.exports = function(app) {
+    // Create all our routes and set up logic within those routes where required.
+    app.get("/", function(req, res) {
+        db.Burger.findAll({})
+            .then(function(result) {
+                var hbsObject = {
+                    burgers: result
+                };
+                // console.log(hbsObject);
+                res.render("index", hbsObject);
+            });
     });
 
+    app.post("/", function(req, res) {
+        var post = req.body;
+        // Then add the character to the database using sequelize
+        db.Burger.create({
+            name: burgerThisName([req.body.size, req.body.protein, req.body.topping, req.body.extra]),
+            devoured: false
+        }).then(
+            function() {
+                res.redirect("/");
+            }
+        ).catch(function() {
+            res.end("Error");
+        });
+    });
 
-});
+    app.put("/:id", function(req, res) {
 
+        console.log(req.param);
+        console.log(req.body);
 
-// Export routes for server.js to use.
-module.exports = router;
+        db.Burger.update({
+                devoured: req.body.devoured
+            }, {
+
+                where: {
+                    id: req.params.id
+                }
+            })
+            .then(function(result) {
+                console.log(result);
+                res.redirect("/");
+            });
+    });
+
+    app.delete("/:id", function(req, res) {
+        db.Burger.destroy({
+                where: {
+                    id: req.params.id
+                }
+            })
+            .then(function(result) {
+                res.redirect("/");
+            });
+    });
+};
