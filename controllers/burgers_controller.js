@@ -19,7 +19,7 @@ var burgerThisName = function(ingredientsArr) {
     }
     burgerName += extra + " Burger";
 
-    return burgerName.trim();
+    return burgerName.replace("  "," ").trim();
 };
 
 module.exports = function(app) {
@@ -36,10 +36,10 @@ module.exports = function(app) {
     });
 
     app.post("/", function(req, res) {
-        var post = req.body;
+        var burger = req.body;
         // Then add the character to the database using sequelize
         db.Burger.create({
-            name: burgerThisName([req.body.size, req.body.protein, req.body.topping, req.body.extra]),
+            name: burgerThisName([burger.size, burger.protein, burger.topping, burger.extra]),
             devoured: false
         }).then(
             function() {
@@ -52,8 +52,31 @@ module.exports = function(app) {
 
     app.put("/:id", function(req, res) {
 
-        console.log(req.param);
-        console.log(req.body);
+        /*console.log(req.param);
+        console.log(req.body);*/
+
+        //NEW CODE
+
+        /*        db.Burger.findAll({
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(function(Burger) {
+                    console.log("TEST", Burger, "END TEST")
+                });
+
+                db.Eater.create({
+                    name: req.body.eater,
+                    burger: "TEST BURGER"
+                }).then(
+                    function() {
+                        res.redirect("/");
+                    }
+                ).catch(function() {
+                    res.end("Error");
+                });*/
+
+        //END NEW CODE
 
         db.Burger.update({
                 devoured: req.body.devoured
@@ -64,7 +87,31 @@ module.exports = function(app) {
                 }
             })
             .then(function(result) {
-                console.log(result);
+                // console.log("TEST",result,"TEST");
+
+                //NEW CODE
+
+/*                db.Burger.findAll({
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(function(Burger) {
+                    console.log("TEST", Burger[0].name, req.body.eater, "END TEST")
+
+                    db.Eater.create({
+                        name: req.body.eater
+                    }).then(
+                        function() {
+                            res.redirect("/");
+                        }
+                    ).catch(function() {
+                        res.end("Error");
+                    });
+
+                });*/
+
+                //END NEW
+
                 res.redirect("/");
             });
     });

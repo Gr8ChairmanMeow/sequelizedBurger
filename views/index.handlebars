@@ -12,6 +12,7 @@
                     {{this.name}}
                     <form action="/{{this.id}}?_method=PUT" method="POST">
                         <input type="hidden" name="devoured" value="true">
+                        <!-- <input type="text" name="eater"> -->
                         <button type="submit">EAT TIME!</button>
                     </form>
                     {{> burgers/delete-burger}}
