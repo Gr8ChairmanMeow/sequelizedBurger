@@ -3,6 +3,8 @@
 ## Eat your new burger today! ##
 
 ### Features include ###
+1. Sequelized!
+   * Easy deployment to JAWSDB!
 1. Enhanced form
    * Radio select
    * Checkbox select
@@ -15,4 +17,4 @@
 ![AMAZING](public/assets/images/noir.jpg)
 >Give me the burger!
 
-[GitHub Repo](https://github.com/Gr8ChairmanMeow/burger)
+[GitHub Repo](https://github.com/Gr8ChairmanMeow/sequelizedBurger)
